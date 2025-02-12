@@ -234,8 +234,9 @@
 
 
 
-//this code is working well for drawing the  circle around it of the gaze point. 
+// //this code is working well for drawing the  circle around it of the gaze point. 
 
+// let detectedWords = []; 
 // let heatmapData = [];
 // let data;
 
@@ -275,8 +276,12 @@
 // }
 
 
+
+// this is working to show words in a small window
+
+/*
+let detectedWords = [];
 let heatmapData = [];
-let detectedWords = []; // Array to store detected words
 let data;
 
 function preload() {
@@ -284,112 +289,321 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(windowWidth, windowHeight);
+  let canvas = createCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
   canvas.position(0, 0);
-  canvas.style('pointer-events', 'none'); 
+  canvas.style('pointer-events', 'none');
   noStroke();
 
   for (let i = 0; i < data.getRowCount(); i++) {
     let row = data.getRow(i);
-    if (row.getNum('FPOGV') === 1) { 
-      let x = map(row.getNum('FPOGX'), 0, 1, 0, document.documentElement.scrollWidth); 
-      let y = map(row.getNum('FPOGY'), 0, 1, 0, document.documentElement.scrollHeight); 
-      let duration = row.getNum('FPOGD'); 
-      heatmapData.push({ x, y, size: map(duration, 0, 5, 5, 50) });
+    if (row.getNum('FPOGV') === 1) {
+      let x = map(row.getNum('FPOGX'), 0, 1, 0, document.documentElement.scrollWidth);
+      let y = map(row.getNum('FPOGY'), 0, 1, 0, document.documentElement.scrollHeight);
+      let duration = row.getNum('FPOGD');
+      let size = map(duration, 0, 5, 5, 50);
+
+      heatmapData.push({ x, y, size });
+      detectWordsAt(x, y, size);
     }
   }
 }
 
 function draw() {
   clear();
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-
-  detectedWords = []; // Clear detected words in each frame
 
   for (let point of heatmapData) {
-    let gazeX = point.x - scrollLeft;
-    let gazeY = point.y - scrollTop;
-
-    fill(255, 0, 0, 50);  
-    ellipse(gazeX, gazeY, point.size);
-
-    detectWordsAtPoint(gazeX, gazeY);
+    fill(255, 0, 0, 50);
+    ellipse(point.x, point.y, 2 * point.size);
   }
 
-  if (detectedWords.length > 0) {
-    console.log("Detected words:", detectedWords);
-  }
+  displayDetectedWords();
 }
 
-function detectWordsAtPoint(x, y) {
-  let elements = document.elementsFromPoint(x, y); // Get elements at gaze point
-  for (let element of elements) {
-    if (element.tagName === "P" || element.tagName === "SPAN") { // Only check text elements
-      let text = element.innerText.trim();
-      if (text) {
-        let words = text.split(/\s+/);
-        let closestWord = findClosestWord(element, words, x, y);
-        if (closestWord && !detectedWords.includes(closestWord)) {
-          detectedWords.push(closestWord);
+function detectWordsAt(x, y, radius) {
+  let elements = document.elementsFromPoint(x, y);
+  elements.forEach(el => {
+    if (el.nodeType === Node.ELEMENT_NODE && el.innerText.trim().length > 0) {
+      let words = el.innerText.split(/\s+/);
+      words.forEach(word => {
+        if (!detectedWords.includes(word)) {
+          detectedWords.push(word);
         }
-      }
+      });
     }
-  }
+  });
 }
 
-function findClosestWord(element, words, x, y) {
-  let range = document.createRange();
-  let selection = window.getSelection();
-
-  for (let word of words) {
-    let index = element.innerText.indexOf(word);
-    if (index !== -1) {
-      range.setStart(element.firstChild, index);
-      range.setEnd(element.firstChild, index + word.length);
-
-      let rect = range.getBoundingClientRect();
-      let wordX = rect.left + rect.width / 2;
-      let wordY = rect.top + rect.height / 2;
-
-      let distance = dist(x, y, wordX, wordY);
-      if (distance < 30) { // Adjust this threshold for better accuracy
-        return word;
-      }
-    }
+function displayDetectedWords() {
+  let wordsContainer = document.getElementById('detected-words');
+  if (!wordsContainer) {
+    wordsContainer = document.createElement('div');
+    wordsContainer.id = 'detected-words';
+    wordsContainer.style.position = 'fixed';
+    wordsContainer.style.bottom = '10px';
+    wordsContainer.style.left = '10px';
+    wordsContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+    wordsContainer.style.color = 'white';
+    wordsContainer.style.padding = '10px';
+    wordsContainer.style.borderRadius = '5px';
+    wordsContainer.style.maxWidth = '300px';
+    wordsContainer.style.overflowY = 'auto';
+    wordsContainer.style.maxHeight = '150px';
+    document.body.appendChild(wordsContainer);
   }
-  return null;
+  wordsContainer.innerHTML = detectedWords.join(', ');
 }
 
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+}
+*/
+
+// let detectedWords = {};
+// let heatmapData = [];
+// let data;
+
+// function preload() {
+//   data = loadTable('guru_all.csv', 'csv', 'header');
+// }
+
+// function setup() {
+//   let canvas = createCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+//   canvas.position(0, 0);
+//   canvas.style('pointer-events', 'none');
+//   noStroke();
+
+//   for (let i = 0; i < data.getRowCount(); i++) {
+//     let row = data.getRow(i);
+//     if (row.getNum('FPOGV') === 1) {
+//       let x = map(row.getNum('FPOGX'), 0, 1, 0, document.documentElement.scrollWidth);
+//       let y = map(row.getNum('FPOGY'), 0, 1, 0, document.documentElement.scrollHeight);
+//       let duration = row.getNum('FPOGD');
+//       let size = map(duration, 0, 5, 5, 50);
+
+//       heatmapData.push({ x, y, size, duration });
+//       detectWordsAt(x, y, size, duration);
+//     }
+//   }
+//   createButtonUI();
+// }
+
+// function draw() {
+//   clear();
+
+//   for (let point of heatmapData) {
+//     fill(255, 0, 0, 50);
+//     ellipse(point.x, point.y, 2 * point.size);
+//   }
+// }
+
+// function detectWordsAt(x, y, radius, duration) {
+//   let elements = document.elementsFromPoint(x, y);
+//   elements.forEach(el => {
+//     if (el.nodeType === Node.ELEMENT_NODE && el.innerText.trim().length > 0) {
+//       let words = el.innerText.split(/\s+/);
+//       words.forEach(word => {
+//         if (!detectedWords[word]) {
+//           detectedWords[word] = { count: 0, duration: 0, size: 1 };
+//         }
+//         detectedWords[word].count++;
+//         detectedWords[word].duration += duration;
+//         detectedWords[word].size = 1 + detectedWords[word].duration;
+//       });
+//     }
+//   });
+// }
+
+// function createButtonUI() {
+//   let button = document.createElement('button');
+//   button.innerText = 'Get Gaze Words';
+//   button.style.position = 'fixed';
+//   button.style.bottom = '20px';
+//   button.style.right = '20px';
+//   button.onclick = showGazeWords;
+//   document.body.appendChild(button);
+// }
+
+// function showGazeWords() {
+//   let wordsContainer = document.getElementById('gaze-words-window');
+//   if (!wordsContainer) {
+//     wordsContainer = document.createElement('div');
+//     wordsContainer.id = 'gaze-words-window';
+//     wordsContainer.style.position = 'fixed';
+//     wordsContainer.style.bottom = '50px';
+//     wordsContainer.style.right = '20px';
+//     wordsContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+//     wordsContainer.style.color = 'white';
+//     wordsContainer.style.padding = '10px';
+//     wordsContainer.style.borderRadius = '5px';
+//     wordsContainer.style.maxWidth = '300px';
+//     wordsContainer.style.maxHeight = '200px';
+//     wordsContainer.style.overflowY = 'auto';
+//     document.body.appendChild(wordsContainer);
+//   }
+//   wordsContainer.innerHTML = '';
+//   for (let word in detectedWords) {
+//     let span = document.createElement('span');
+//     span.innerText = word + ' ';
+//     span.style.fontSize = detectedWords[word].size + 'px';
+//     span.style.display = 'inline-block';
+//     wordsContainer.appendChild(span);
+//   }
+// }
+
+// function windowResized() {
+//   resizeCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+// }
+
+
+let detectedWords = {};
+let heatmapData = [];
+let data;
+let wordsVisible = false;
+let wordsContainer;
+let toggleButton;
+
+function preload() {
+  data = loadTable('guru_all.csv', 'csv', 'header');
 }
 
-document.querySelectorAll('p').forEach(paragraph => {
-  paragraph.addEventListener('mousemove', event => {
-    const speed = Math.abs(event.movementX) + Math.abs(event.movementY);
-    const colorIntensity = Math.min(255, speed * 10);
-    paragraph.style.color = `rgb(${colorIntensity}, ${255 - colorIntensity}, ${255 - colorIntensity})`;
-  });
+function setup() {
+  let canvas = createCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+  // let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.position(0, 0);
+  canvas.style('pointer-events', 'none');
+  noStroke();
 
-  paragraph.addEventListener('mouseleave', () => {
-    paragraph.style.color = '';
-  });
-});
-
-document.addEventListener('mouseup', () => {
-  const selection = window.getSelection();
-  const selectedText = selection.toString().trim();
-
-  if (selectedText) {
-    const range = selection.getRangeAt(0);
-    const span = document.createElement('span');
-    span.textContent = selectedText;
-    span.style.backgroundColor = 'yellow';
-    span.style.color = 'black';
-
-    range.deleteContents();
-    range.insertNode(span);
-    selection.removeAllRanges();
+  for (let i = 0; i < data.getRowCount(); i++) {
+    let row = data.getRow(i);
+    if (row.getNum('FPOGV') === 1) {
+      let x = map(row.getNum('FPOGX'), 0, 1, 0, document.documentElement.scrollWidth);
+      let y = map(row.getNum('FPOGY'), 0, 1, 0, document.documentElement.scrollHeight);
+      let duration = row.getNum('FPOGD');
+      let size = map(duration, 0, 5, 5, 50);
+      
+      heatmapData.push({ x, y, size, duration });
+      detectWordsAt(x, y, size, duration);
+    }
   }
-});
+  createButtonUI();
+}
+
+function draw() {
+  clear();
+  for (let point of heatmapData) {
+    let alpha = map(point.duration, 0, 5, 50, 255);
+    fill(255, 0, 0, alpha);
+    ellipse(point.x, point.y, 2 * point.size);
+  }
+}
+
+
+
+function detectWordsAt(x, y, radius, duration) {
+  let range;
+  if (document.caretPositionFromPoint) {
+    range = document.caretPositionFromPoint(x, y);
+  } else if (document.caretRangeFromPoint) {
+    range = document.caretRangeFromPoint(x, y);
+  }
+
+  if (range && range.offsetNode && range.offsetNode.nodeType === Node.TEXT_NODE) {
+    let textNode = range.offsetNode;
+    let offset = range.offset;
+
+    // Get the full text content of the node
+    let text = textNode.textContent;
+
+    // Extract the word at the offset position
+    let word = getWordAt(text, offset);
+
+    if (word && word.trim().length > 0) {
+      if (!detectedWords[word]) {
+        detectedWords[word] = { count: 0, duration: 0, size: 10, color: '' };
+      }
+      detectedWords[word].count++;
+      detectedWords[word].duration += duration;
+      detectedWords[word].size = constrain(map(detectedWords[word].duration, 0, 5, 10, 46), 10, 46);
+      detectedWords[word].color = `rgb(${map(detectedWords[word].duration, 0, 5, 0, 255)}, 50, 150)`;
+    }
+  }
+}
+
+// Helper function to extract a word at a specific character offset
+function getWordAt(text, offset) {
+  let left = offset, right = offset;
+
+  // Expand leftwards until we hit a space or the start of the text
+  while (left > 0 && /\S/.test(text[left - 1])) {
+    left--;
+  }
+
+  // Expand rightwards until we hit a space or the end of the text
+  while (right < text.length && /\S/.test(text[right])) {
+    right++;
+  }
+
+  return text.slice(left, right);
+}
+
+
+function createButtonUI() {
+  toggleButton = document.createElement('button');
+  toggleButton.innerText = 'Get Gaze Words';
+  toggleButton.style.position = 'fixed';
+  toggleButton.style.bottom = '20px';
+  toggleButton.style.right = '20px';
+  toggleButton.onclick = toggleGazeWords;
+  document.body.appendChild(toggleButton);
+}
+
+function toggleGazeWords() {
+  if (wordsVisible) {
+    if (wordsContainer) {
+      document.body.removeChild(wordsContainer);
+      wordsContainer = null;
+    }
+    toggleButton.innerText = 'Get Gaze Words';
+  } else {
+    wordsContainer = document.createElement('div');
+    wordsContainer.id = 'gaze-words-window';
+    wordsContainer.style.position = 'fixed';
+    wordsContainer.style.bottom = '50px';
+    wordsContainer.style.right = '20px';
+    wordsContainer.style.backgroundColor = 'rgba(255, 255, 255, 1)';
+    wordsContainer.style.color = 'white';
+    wordsContainer.style.padding = '10px';
+    wordsContainer.style.borderRadius = '5px';
+    wordsContainer.style.width = '300px';
+    wordsContainer.style.height = '200px';
+    wordsContainer.style.overflowY = 'auto';
+    wordsContainer.style.resize = 'both';
+    wordsContainer.style.minWidth = '150px';
+    wordsContainer.style.minHeight = '100px';
+    wordsContainer.style.maxWidth = '90vw';
+    wordsContainer.style.maxHeight = '90vh';
+    wordsContainer.style.overflow = 'auto';
+    
+    let sortedWords = Object.entries(detectedWords).sort((a, b) => b[1].duration - a[1].duration);
+    sortedWords.forEach(([word, info]) => {
+      let span = document.createElement('span');
+      span.innerText = word + ' ';
+      span.style.fontSize = info.size + 'px';
+      span.style.color = info.color;
+      span.style.marginRight = '5px';
+      span.style.display = 'inline-block';
+      wordsContainer.appendChild(span);
+    });
+
+    document.body.appendChild(wordsContainer);
+    toggleButton.innerText = 'Close Gaze Words';
+  }
+  wordsVisible = !wordsVisible;
+}
+
+function windowResized() {
+  resizeCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+}
+
+
+
