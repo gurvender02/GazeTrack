@@ -7,15 +7,28 @@ body {
   line-height: 1.6;
 }
 .ribbon {
-  background-color: #6200ea;
-  color: #fff;
-  padding: 15px 20px;
-  text-align: center;
-  font-size: 1.5em;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#scrollTrackingButton {
+  background-color: white;
+  color: #007bff;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+#scrollTrackingButton:hover {
+  background-color: #f1f1f1;
 }
 .container {
   /* max-width: 800px; */
@@ -39,6 +52,13 @@ canvas {
   display: block;
   margin: 20px auto;
 }
+
+.highlighted {
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+}
+
 
 .highlighted {
   background-color: yellow;

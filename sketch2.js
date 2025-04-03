@@ -13,17 +13,73 @@ function preload() {
   ScrollingData = loadTable('sd1.csv', 'csv', 'header');
 }
 
+// function setup() {
+//   let container = document.getElementsByClassName("container")[0]; 
+//   let wd, ht;
+  
+//   if (container) {
+//     wd = container.offsetWidth;
+//     ht = container.offsetHeight;
+//   } else {
+//     wd = document.documentElement.scrollWidth;
+//     ht = document.documentElement.scrollHeight;
+//   }
+
+//   let canvas = createCanvas(wd, ht);
+//   canvas.position(0, 0);
+//   canvas.style('pointer-events', 'none');
+//   noStroke();
+
+//   let countRow = Math.max(
+//     Number(ScrollingData && ScrollingData.getRowCount() || 0), 
+//     Number(data && data.getRowCount() || 0)
+//   );
+
+//   let rowD1, rowSD1;
+//   let currRowD1Num = 200;
+//   let currRowSD1Num = 0; // Initialized properly
+
+//   for (let i = 0; i < countRow; i++) {
+//     currRowSD1Num ++;
+
+//         // Fixed condition
+//       rowD1 = data.getRow(currRowD1Num);
+//       rowSD1 = ScrollingData.getRow(currRowSD1Num); // Fixed variable name
+
+//       if (rowD1.getNum('FPOGV') === 1) {
+//         let x = map(rowD1.getNum('FPOGX'), 0, 1, 0, document.documentElement.scrollWidth);
+//         let y = map(rowD1.getNum('FPOGY'), 0, 1, 0, window.innerHeight);
+//         y += rowSD1.getNum('ScrollY');
+//         let duration1 = rowD1.getNum('FPOGD');
+//         let size1 = map(duration1, 0, 5, 5, 50);
+
+//         heatmapData.push({ x, y, size1, duration1 });
+//         detectWordsAt(x, y, size1, duration1);
+//       }
+    
+//   }
+//   createButtonUI();
+// }
+
+
 function setup() {
-  let canvas = createCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
+  let container = document.getElementsByClassName("container")[0]
+  let canvas = createCanvas(document.documentElement.scrollWidth, container.offsetHeight);
   canvas.position(0, 0);
   canvas.style('pointer-events', 'none');
   noStroke();
 
   for (let i = 0; i < data.getRowCount(); i++) {
     let row = data.getRow(i);
+    let rowSD1 = ScrollingData.getRow(i*3);
+    if(rowSD1 == undefined || rowSD1 == null) {
+      rowSD1 = 1;
+    }
+
     if (row.getNum('FPOGV') === 1) {
       let x = map(row.getNum('FPOGX'), 0, 1, 0, document.documentElement.scrollWidth);
-      let y = map(row.getNum('FPOGY'), 0, 1, 0, document.documentElement.scrollHeight);
+      let y = map(row.getNum('FPOGY'), 0, 1, 0, window.innerHeight);
+      y += rowSD1.getNum('ScrollY') - 80;
       let duration = row.getNum('FPOGD');
       let size = map(duration, 0, 5, 5, 50);
 
@@ -37,8 +93,8 @@ function setup() {
 function draw() {
   clear();
   for (let point of heatmapData) {
-    let alpha = map(point.duration, 0, 5, 10, 50);
-    fill(255, 0, 0, alpha);
+    let alpha = map(point.duration, 0, 5, 10, 20);
+    fill(255, 255, 0, alpha);
     ellipse(point.x, point.y, 2 * point.size);
   }
 }
@@ -104,7 +160,7 @@ function downloadCSV() {
 
 
 
-function detectWordsAt(x, y, radius, duration) {
+function detectWordsAt(x, y, radius, duration1) {
   let range;
   if (document.caretPositionFromPoint) {
     range = document.caretPositionFromPoint(x, y);
@@ -124,12 +180,12 @@ function detectWordsAt(x, y, radius, duration) {
 
     if (word && word.trim().length > 0) {
       if (!detectedWords[word]) {
-        detectedWords[word] = { count: 0, duration: 0, size: 10, color: '' };
+        detectedWords[word] = { count: 0, duration1: 0, size: 10, color: '' };
       }
       detectedWords[word].count++;
-      detectedWords[word].duration += duration;
-      detectedWords[word].size = constrain(map(detectedWords[word].duration, 0, 5, 10, 46), 10, 46);
-      detectedWords[word].color = `rgb(${map(detectedWords[word].duration, 0, 5, 0, 255)}, 50, 150)`;
+      detectedWords[word].duration1 += duration1;
+      detectedWords[word].size1 = constrain(map(detectedWords[word].duration1, 0, 5, 10, 46), 10, 46);
+      detectedWords[word].color = `rgb(${map(detectedWords[word].duration1, 0, 5, 0, 255)}, 50, 150)`;
     }
   }
 }
@@ -189,7 +245,7 @@ function toggleGazeWords() {
     wordsContainer.style.maxHeight = '90vh';
     wordsContainer.style.overflow = 'auto';
 
-    let sortedWords = Object.entries(detectedWords).sort((a, b) => b[1].duration - a[1].duration);
+    let sortedWords = Object.entries(detectedWords).sort((a, b) => b[1].duration1 - a[1].duration1);
     sortedWords.forEach(([word, info]) => {
       let span = document.createElement('span');
       span.innerText = word + ' ';
@@ -209,5 +265,6 @@ function toggleGazeWords() {
 function windowResized() {
   resizeCanvas(document.documentElement.scrollWidth, document.documentElement.scrollHeight);
 }
+
 
 
