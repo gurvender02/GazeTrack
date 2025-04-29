@@ -127,25 +127,3 @@ Distributed under MIT License. See `LICENSE` for more information.
 
 **Happy Eye Tracking Analysis!** 👁️📊
 ```
-
-This README includes:
-
-1. Project visualization placeholder
-2. Clear technology badges
-3. Installation and usage instructions
-4. Data format requirements
-5. Code snippets highlighting key functionality
-6. Technical architecture diagram
-7. Contribution guidelines
-8. License information
-9. Responsive design elements
-10. Interactive component explanations
-
-To enhance it further, you could:
-
-1. Add actual project screenshots
-2. Include video demonstration link
-3. Add hardware integration details
-4. Expand data format documentation
-5. Add performance metrics
-6. Include citation information for academic use
