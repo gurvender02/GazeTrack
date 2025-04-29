@@ -38,7 +38,7 @@ A web-based visualization tool that processes eye-tracking data to create intera
 ### Quick Start
 1. Clone repository:
    ```bash
-   git clone https://github.com/your-username/eye-tracking-visualization.git
+   git clone https://github.comgurvender02/GazeTrack
    ```
 2. Place your eye-tracking data file (`d2.csv`) in project root
 3. Launch using:
