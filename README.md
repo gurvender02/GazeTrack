@@ -1,6 +1,4 @@
-Here's a professional README.md for your GitHub project:
 
-```markdown
 # Eye Tracking Visualization & Analysis Toolkit
 
 ![Project Preview](https://via.placeholder.com/800x400.png?text=Gaze+Visualization+Demo) 
